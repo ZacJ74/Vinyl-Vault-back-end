@@ -9,7 +9,6 @@ const logger = require('morgan');
 
 // Import routers
 const authRouter = require('./controllers/auth');
-const testJwtRouter = require('./controllers/test-jwt');
 const usersRouter = require('./controllers/users');
 const hootsRouter = require('./controllers/hoots');
 
