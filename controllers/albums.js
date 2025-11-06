@@ -1,5 +1,10 @@
+const express = require('express');
+const Album = require('../models/Album');
+const router = express.Router();
+const verifyToken = require('../middleware/verify-token');
+
 // controllers/albums.js (Index - GET /albums)
-exports.index = async (req, res) => {
+router.index = async (req, res) => {
   try {
     // Finds all albums where the 'owner' matches the ID attached by requireToken middleware
     const albums = await Album.find({ owner: req.userId }).populate('owner', 'email')
@@ -13,7 +18,7 @@ exports.index = async (req, res) => {
 
 
 // controllers/albums.js (Show - GET /albums/:id)
-exports.show = async (req, res) => {
+router.show = async (req, res) => {
   try {
     const album = await Album.findById(req.params.id).populate('owner', 'email')
     
@@ -31,7 +36,7 @@ exports.show = async (req, res) => {
 
 
 // controllers/albums.js (Create - POST /albums)
-exports.create = async (req, res) => {
+router.create = async (req, res) => {
   try {
     // 1. Assign the owner ID from the JWT payload (via req.userId)
     const albumData = { 
@@ -49,7 +54,7 @@ exports.create = async (req, res) => {
 
 
 // controllers/albums.js (Update - PUT /albums/:id)
-exports.update = async (req, res) => {
+router.update = async (req, res) => {
   try {
     const album = await Album.findById(req.params.id)
     
@@ -77,7 +82,7 @@ exports.update = async (req, res) => {
 
 
 // controllers/albums.js (Destroy - DELETE /albums/:id)
-exports.destroy = async (req, res) => {
+router.destroy = async (req, res) => {
   try {
     const album = await Album.findById(req.params.id)
     
@@ -99,3 +104,4 @@ exports.destroy = async (req, res) => {
 }
 
 
+module.exports = router;

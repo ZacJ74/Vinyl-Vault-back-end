@@ -1,5 +1,13 @@
+const express = require('express');
+const Review = require('../models/Review');
+const Album = require('../models/Album'); 
+const router = require('./users');
+
+
+
+
 // controllers/reviews.js (Index - GET /reviews/album/:albumId)
-exports.index = async (req, res) => {
+router.index = async (req, res) => {
   try {
     // Finds all reviews where the 'album' matches the ID from the URL parameter
     const reviews = await Review.find({ album: req.params.albumId })
@@ -15,7 +23,7 @@ exports.index = async (req, res) => {
 
 
 // controllers/reviews.js (Create - POST /reviews)
-exports.create = async (req, res) => {
+router.create = async (req, res) => {
   try {
     // 1. Assign reviewer ID from JWT (via req.userId)
     // 2. Assign album ID from the request body
@@ -36,7 +44,7 @@ exports.create = async (req, res) => {
 }
 
 // controllers/reviews.js (Update - PUT /reviews/:id)
-exports.update = async (req, res) => {
+router.update = async (req, res) => {
   try {
     const review = await Review.findById(req.params.id)
     
@@ -64,7 +72,7 @@ exports.update = async (req, res) => {
 
 
 // controllers/reviews.js (Destroy - DELETE /reviews/:id)
-exports.destroy = async (req, res) => {
+router.destroy = async (req, res) => {
   try {
     const review = await Review.findById(req.params.id)
     
@@ -74,7 +82,7 @@ exports.destroy = async (req, res) => {
 
     // --- Authorization Check: Reviewer ID check ---
     if (review.reviewer.toString() !== req.userId.toString()) {
-      return res.status(403).json({ message: 'Forbidden: You did not write this review.' })
+      return res.status(403).json({ message: 'Not Allowed: You did not write this review.' })
     }
     // ---------------------------------------------
 
@@ -84,3 +92,5 @@ exports.destroy = async (req, res) => {
     res.status(500).json({ error: error.message })
   }
 }
+
+module.exports = router;

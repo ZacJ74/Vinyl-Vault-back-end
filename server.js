@@ -10,7 +10,9 @@ const logger = require('morgan');
 // Import routers
 const authRouter = require('./controllers/auth');
 const usersRouter = require('./controllers/users');
-const hootsRouter = require('./controllers/hoots');
+const albumsRouter = require('./controllers/albums');
+const reviewsRouter = require('./controllers/reviews');
+const testJwtRouter = require('./controllers/test-jwt');
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI);
@@ -28,9 +30,10 @@ app.use(logger('dev'));
 app.use('/auth', authRouter);
 app.use('/test-jwt', testJwtRouter);
 app.use('/users', usersRouter);
-app.use('/hoots', hootsRouter);
+app.use('/albums', albumsRouter);
+app.use('/reviews', reviewsRouter);
 
 // Start the server and listen on port 3000
 app.listen(3000, () => {
-  console.log('The express app is ready!');
+  console.log('The express part is ready!');
 });
