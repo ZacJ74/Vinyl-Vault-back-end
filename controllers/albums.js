@@ -4,7 +4,7 @@ const router = express.Router();
 const verifyToken = require('../middleware/verify-token');
 
 // controllers/albums.js (Index - GET /albums)
-router.index = async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
   try {
     // Finds all albums where the 'owner' matches the ID attached by requireToken middleware
     const albums = await Album.find({ owner: req.userId }).populate('owner', 'email')
@@ -12,13 +12,13 @@ router.index = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
-}
+});
 
 
 
 
 // controllers/albums.js (Show - GET /albums/:id)
-router.show = async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
   try {
     const album = await Album.findById(req.params.id).populate('owner', 'email')
     
@@ -31,17 +31,17 @@ router.show = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
-}
+});
 
 
 
 // controllers/albums.js (Create - POST /albums)
-router.create = async (req, res) => {
+router.post ('/', verifyToken, async (req, res) => {
   try {
     // 1. Assign the owner ID from the JWT payload (via req.userId)
     const albumData = { 
       ...req.body, 
-      owner: req.userId // CRITICAL: Sets the album owner
+      owner: req.userId // Sets the album owner
     }
     
     const album = await Album.create(albumData)
@@ -49,12 +49,12 @@ router.create = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: error.message }) // 400 for validation errors
   }
-}
+});
 
 
 
 // controllers/albums.js (Update - PUT /albums/:id)
-router.update = async (req, res) => {
+router.put ('/:id', verifyToken, async (req, res) => {
   try {
     const album = await Album.findById(req.params.id)
     
@@ -77,12 +77,12 @@ router.update = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
-}
+});
 
 
 
 // controllers/albums.js (Destroy - DELETE /albums/:id)
-router.destroy = async (req, res) => {
+router.delete ('/:id', verifyToken, async (req, res) => {
   try {
     const album = await Album.findById(req.params.id)
     
@@ -101,7 +101,7 @@ router.destroy = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
-}
+});
 
 
 module.exports = router;
