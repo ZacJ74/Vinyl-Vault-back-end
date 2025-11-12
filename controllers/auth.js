@@ -1,3 +1,5 @@
+
+
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
@@ -12,7 +14,8 @@ router.post('/sign-up', async (req, res) => {
     const userInDatabase = await User.findOne({ username: req.body.username });
     
     if (userInDatabase) {
-      return res.status(409).json({err: 'Username already taken.'});
+      // 409 Conflict: Now returns { err: '...' }
+      return res.status(409).json({ err: 'Username already taken.' });
     }
     
     const user = await User.create({
@@ -24,9 +27,12 @@ router.post('/sign-up', async (req, res) => {
 
     const token = jwt.sign({ payload }, process.env.JWT_SECRET);
 
-    res.status(201).json({ token });
+    // Success path returns { token, username }
+    return res.status(201).json({ token, username: user.username });
+
   } catch (err) {
-    res.status(500).json({ err: err.message });
+    // 500 Server Error: Now returns { err: '...' }
+    return res.status(500).json({ err: err.message });
   }
 });
 
@@ -34,6 +40,7 @@ router.post('/sign-in', async (req, res) => {
   try {
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
+      // 401 Unauthorized: Now returns { err: '...' }
       return res.status(401).json({ err: 'Invalid credentials.' });
     }
 
@@ -41,6 +48,7 @@ router.post('/sign-in', async (req, res) => {
       req.body.password, user.hashedPassword
     );
     if (!isPasswordCorrect) {
+      // 401 Unauthorized: Now returns { err: '...' }
       return res.status(401).json({ err: 'Invalid credentials.' });
     }
 
@@ -48,9 +56,11 @@ router.post('/sign-in', async (req, res) => {
 
     const token = jwt.sign({ payload }, process.env.JWT_SECRET);
 
-    res.status(200).json({ token });
+    // Success path returns { token, username }
+    return res.status(200).json({ token, username: user.username });
   } catch (err) {
-    res.status(500).json({ err: err.message });
+    // 500 Server Error: Now returns { err: '...' }
+    return res.status(500).json({ err: err.message });
   }
 });
 

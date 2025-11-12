@@ -3,7 +3,19 @@ const Album = require('../models/Album');
 const router = express.Router();
 const verifyToken = require('../middleware/verify-token');
 
-// controllers/albums.js (Index - GET /albums)
+// controllers/albums.js (Public Index - GET /public) - Return all albums from all users
+router.get('/public', async (req, res) => {
+  try {
+    const albums = await Album.find({})
+      .populate('owner', 'username')
+      .sort({ createdAt: -1 });
+    res.status(200).json(albums);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// controllers/albums.js (Index - GET /albums) - Return all albums from the authenticated user
 router.get('/', verifyToken, async (req, res) => {
   try {
     // Finds all albums where the 'owner' matches the ID attached by requireToken middleware
@@ -18,7 +30,7 @@ router.get('/', verifyToken, async (req, res) => {
 
 
 // controllers/albums.js (Show - GET /albums/:id)
-router.get('/', verifyToken, async (req, res) => {
+router.get('/:id', verifyToken, async (req, res) => {
   try {
     const album = await Album.findById(req.params.id).populate('owner', 'email')
     

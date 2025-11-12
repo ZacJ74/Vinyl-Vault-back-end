@@ -11,7 +11,7 @@ const reviewSchema = new Schema({
     type: Number, 
     required: true,
     min: 1, 
-    max: 5 // Assuming a 1-5 star rating
+    max: 10 // Rating out of 10
   },
   // --- CRITICAL Foreign Keys ---
   album: { 

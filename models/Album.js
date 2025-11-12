@@ -12,7 +12,7 @@ const albumSchema = new Schema({
     required: true,
     trim: true
   },
-  yearReleased: { 
+  year: { 
     type: Number, 
     // Basic validation to ensure a reasonable year is entered
     min: 1900, 
@@ -31,6 +31,14 @@ const albumSchema = new Schema({
   notes: { 
     type: String, 
     trim: true 
+  },
+  genre: {
+    type: String,
+    trim: true
+  },
+  coverImage: {
+    type: String,
+    trim: true
   },
   // --- CRITICAL for Authorization ---
   owner: { 
